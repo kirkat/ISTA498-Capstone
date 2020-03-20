@@ -6,9 +6,11 @@ from textblob.en import sentiment as pattern_sentiment
 from textblob.tokenizers import word_tokenize
 from textblob.decorators import requires_nltk_corpus
 from textblob.base import BaseSentimentAnalyzer, DISCRETE, CONTINUOUS
-import os, sys, re, getopt
+import os, sys, re, getopt, matplotlib
 import traceback
 from textblob import TextBlob
+import GetOldTweets3 as got
+pip install seaborn #for data visualizations
 
 consumer_key = "WcsQChLgwXTmgA4d4PwR3JP2d"
 consumer_secret = "kI1RiEVpuKBMyyvhzBPTGri7Uo5l7zN2Knr3iw7OPhexhatqKt"
@@ -17,16 +19,19 @@ access_token_secret = "41nhpa3UPsuebfPqhCUzCjeyS3BcVxGOGguQvtsEb8OYr"
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
-public_tweets = api.home_timeline()
+avengers_tweets=api.search("AvengersEndGame")
+parasite_tweets=api.search("Parasite")
+
+#public_tweets = api.home_timeline()
 for tweet in public_tweets:
     print(tweet.text)
-
+    analysis=TextBlob(tweet.text)
+    print(analysis.sentiment)
 
 
 if sys.version_info[0] < 3:
     raise Exception("Python 2.x is not supported. Please upgrade to 3.x")
 
-import GetOldTweets3 as got
 
 def main(argv):
     if len(argv) == 0:
