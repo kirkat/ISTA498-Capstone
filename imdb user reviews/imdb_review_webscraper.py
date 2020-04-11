@@ -61,7 +61,7 @@ def main():
     parasite_url = "https://www.imdb.com/title/tt6751668/reviews?ref_=tt_urv"
     avengers_url = "https://www.imdb.com/title/tt4154796/reviews?ref_=tt_ov_rt"
     
-    #scrape_and_save('imdb_parasite_review.csv', parasite_url)
+    scrape_and_save('imdb_parasite_review.csv', parasite_url)
     scrape_and_save('imdb_avengers_review.csv', avengers_url)
 
 if __name__ == "__main__":
