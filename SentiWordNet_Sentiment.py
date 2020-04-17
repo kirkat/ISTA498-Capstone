@@ -3,11 +3,12 @@ import nltk
 from nltk import word_tokenize 
 from nltk.corpus import stopwords 
 from nltk.corpus import sentiwordnet as swn 
-import string 
+import string
 
 def text_score(text):
     #create单词表
     #nltk.pos_tag是打标签
+    stop = stopwords.words("english") + list(string.punctuation)
     ttt = nltk.pos_tag([i for i in word_tokenize(str(text).lower()) if i not in stop])
     word_tag_fq = nltk.FreqDist(ttt)
     wordlist = word_tag_fq.most_common()
@@ -58,19 +59,38 @@ def text_score(text):
             score.append(s/ra)
         else:
             score.append(0)
-            
-    return pd.concat([textdf,pd.DataFrame({'score':score})],axis=1)
+    # print(textdf)  
+    textdf = pd.concat([textdf,pd.DataFrame({'score':score})],axis=1)
+    return sum(textdf.iloc[:,3])
 
 def ratetext(com):
-    
+    # com = linkdel(com)
+    score_list = []
+    for i in range(len(com)):
+        score_list.append(text_score(com[i]))
+    return score_list
+
+# def linkdel(com):
+#     df = pd.DataFrame().
+#     for i in com:
+#         i = i[:i.find("https")]
+#     return com
 
 def readin(path):
     file = pd.read_csv(path)
     return file.iloc[:,6]
 
+def posrate(scores):
+    pos = 0;
+    for i in scores:
+        if i >0:
+            pos+=1
+    print(pos/len(scores))
+
 def main():
     com =  readin("output_got.csv")
     scores = ratetext(com)
+    posrate(scores)
 
 if __name__ == '__main__':
     main()
