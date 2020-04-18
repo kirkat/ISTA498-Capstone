@@ -4,16 +4,15 @@ from nltk import word_tokenize
 from nltk.corpus import stopwords 
 from nltk.corpus import sentiwordnet as swn 
 import string
+import os
+import sys
 
 def text_score(text):
-    #create单词表
-    #nltk.pos_tag是打标签
     stop = stopwords.words("english") + list(string.punctuation)
     ttt = nltk.pos_tag([i for i in word_tokenize(str(text).lower()) if i not in stop])
     word_tag_fq = nltk.FreqDist(ttt)
     wordlist = word_tag_fq.most_common()
 
-    #变为dataframe形式
     key = []
     part = []
     frequency = []
@@ -46,7 +45,7 @@ def text_score(text):
         else:
             textdf.iloc[i,1]=''
             
-        #计算单个评论的单词分数
+
     score = []
     for i in range(len(textdf['key'])):
         m = list(swn.senti_synsets(textdf.iloc[i,0],textdf.iloc[i,1]))
@@ -61,7 +60,7 @@ def text_score(text):
             score.append(0)
     # print(textdf)  
     textdf = pd.concat([textdf,pd.DataFrame({'score':score})],axis=1)
-    return sum(textdf.iloc[:,3])
+    return sum(textdf.iloc[:,3]) # return text score
 
 def ratetext(com):
     # com = linkdel(com)
@@ -69,12 +68,6 @@ def ratetext(com):
     for i in range(len(com)):
         score_list.append(text_score(com[i]))
     return score_list
-
-# def linkdel(com):
-#     df = pd.DataFrame().
-#     for i in com:
-#         i = i[:i.find("https")]
-#     return com
 
 def readin(path):
     file = pd.read_csv(path)
@@ -85,12 +78,23 @@ def posrate(scores):
     for i in scores:
         if i >0:
             pos+=1
-    print(pos/len(scores))
+    return (pos/len(scores))
 
-def main():
-    com =  readin("output_got.csv")
-    scores = ratetext(com)
-    posrate(scores)
+def main(argv):
+    posratebyweek = []
+    for i in range(6):
+        fold = "#"+argv[0]
+        file = "week"+str(i)+".csv"
+        path = os.path.join(fold,file)
+        com =  readin(path)
+        scores = ratetext(com)
+        posratebyweek.append(posrate(scores))
+    file = open("marvels_rate_sentiwordnet.csv","a+")
+    file.write(argv[0])
+    for i in posratebyweek:
+        file.write(","+str(i))
+    file.write("\n")
+    file.close()
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
