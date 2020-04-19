@@ -10,16 +10,16 @@ def getSentiWordNetposrate(filmlist):
     for i in range(len(filmlist)):
         command = "python3 SentiWordNet_Sentiment.py "+filmlist[i]
         print(command)
-        #os.system()
+        os.system(command)
 
 def getSVMposrate(filmlist):
     for i in range(len(filmlist)):
         command = "python3 SVMnew.py "+filmlist[i]
         print(command)
-        #os.system()
+        os.system(command)
 
 def main():
-    filmlist,datelist = readfilmlist("marvel_films_list.csv")
+    filmlist,datelist = readfilmlist("process_list.csv")
     getSentiWordNetposrate(filmlist)
     getSVMposrate(filmlist)
 
