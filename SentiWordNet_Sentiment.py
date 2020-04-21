@@ -76,7 +76,7 @@ def readin(path):
 def posrate(scores):
     pos = 0;
     for i in scores:
-        if i >0:
+        if i >0.2:
             pos+=1
     return (pos/len(scores))
 
