@@ -34,8 +34,16 @@ def scrape_and_save(filename, url):
         temp.append(name)
         
         #Rating
-        rating = review.find('span').text
-        temp.append(rating.strip('\n'))
+        rating = review.find('span').text.strip()
+        rating = rating.split('/')
+        if rating[0].isnumeric():
+            if int(rating[0]) >= 6:
+                rating = "POS"
+            else:
+                rating = "NEG"
+        else:
+            rating = "NEG"
+        temp.append(rating)
         
         #Date
         date = review.find('span', {'class' : 'review-date'}).string
